@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Checklist, ChecklistItem } from '../types/checklist';
 
@@ -211,6 +210,43 @@ export const useChecklists = () => {
     );
   };
 
+  const updateChecklist = (checklistId: string, updates: Partial<Checklist>) => {
+    setChecklists(prevChecklists =>
+      prevChecklists.map(checklist =>
+        checklist.id === checklistId
+          ? { 
+              ...checklist, 
+              ...updates, 
+              updatedAt: new Date(),
+              version: checklist.version + 1 
+            }
+          : checklist
+      )
+    );
+  };
+
+  const createChecklist = (checklistData: Partial<Checklist>) => {
+    const newChecklist: Checklist = {
+      id: `checklist-${Date.now()}`,
+      title: checklistData.title || '',
+      description: checklistData.description,
+      items: checklistData.items || [],
+      status: 'open',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      responsible: checklistData.responsible,
+      deputy: checklistData.deputy,
+      tags: checklistData.tags || [],
+      isTemplate: checklistData.isTemplate || false,
+      recurringPattern: checklistData.recurringPattern,
+      version: 1,
+      ...checklistData,
+    };
+    
+    setChecklists(prevChecklists => [...prevChecklists, newChecklist]);
+    return newChecklist;
+  };
+
   const archiveChecklist = (checklistId: string) => {
     setChecklists(prevChecklists =>
       prevChecklists.map(checklist =>
@@ -246,6 +282,8 @@ export const useChecklists = () => {
     checklists,
     loading,
     toggleItemComplete,
+    updateChecklist,
+    createChecklist,
     archiveChecklist,
     restoreChecklist,
   };

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { ArrowLeft, Edit, Archive, User, Calendar, CheckCircle, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,12 +5,15 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useChecklists } from '../hooks/useChecklists';
 import { ChecklistItem } from '../components/ChecklistItem';
+import { ChecklistEditor } from '../components/ChecklistEditor';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Checklist } from '../types/checklist';
 
 export default function ChecklistDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { checklists, toggleItemComplete, archiveChecklist } = useChecklists();
+  const { checklists, toggleItemComplete, archiveChecklist, updateChecklist } = useChecklists();
+  const [isEditing, setIsEditing] = useState(false);
   
   const checklist = checklists.find(c => c.id === id);
 
@@ -27,6 +29,21 @@ export default function ChecklistDetail() {
           </Button>
         </div>
       </div>
+    );
+  }
+
+  const handleSave = (updates: Partial<Checklist>) => {
+    updateChecklist(checklist.id, updates);
+    setIsEditing(false);
+  };
+
+  if (isEditing) {
+    return (
+      <ChecklistEditor
+        checklist={checklist}
+        onSave={handleSave}
+        onCancel={() => setIsEditing(false)}
+      />
     );
   }
 
@@ -86,7 +103,11 @@ export default function ChecklistDetail() {
             )}
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setIsEditing(true)}
+            >
               <Edit className="h-4 w-4 mr-2" />
               Bearbeiten
             </Button>

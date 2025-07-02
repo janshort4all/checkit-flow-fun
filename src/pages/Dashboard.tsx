@@ -6,13 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useChecklists } from '../hooks/useChecklists';
 import { ChecklistCard } from '../components/ChecklistCard';
-import { DashboardStats } from '../components/DashboardStats';
-import { Checklist } from '../types/checklist';
+import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
   const { checklists, loading, archiveChecklist, restoreChecklist } = useChecklists();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const navigate = useNavigate();
 
   const filteredChecklists = checklists.filter(checklist => {
     const matchesSearch = checklist.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -51,8 +51,6 @@ export default function Dashboard() {
           Neue Checkliste
         </Button>
       </div>
-
-      <DashboardStats checklists={checklists} />
 
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="flex-1">
@@ -94,7 +92,7 @@ export default function Dashboard() {
                   checklist={checklist}
                   onArchive={archiveChecklist}
                   onRestore={restoreChecklist}
-                  onClick={(id) => console.log('Navigate to checklist', id)}
+                  onClick={(id) => navigate(`/checklist/${id}`)}
                 />
               </div>
             ))}
