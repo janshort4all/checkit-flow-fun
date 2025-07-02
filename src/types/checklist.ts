@@ -18,6 +18,13 @@ export interface ChecklistItem {
     id: string;
     url: string;
     alt: string;
+    name: string;
+  }>;
+  orgChart?: Array<{
+    id: string;
+    name: string;
+    role: string;
+    children: any[];
   }>;
 }
 

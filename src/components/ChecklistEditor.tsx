@@ -9,7 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Checklist, ChecklistItem } from '../types/checklist';
+import { OrgChart } from './OrgChart';
+import { ImageUpload } from './ImageUpload';
 
 interface ChecklistEditorProps {
   checklist?: Checklist;
@@ -271,6 +274,16 @@ function ChecklistItemEditor({ item, index, onUpdate, onRemove }: ChecklistItemE
     });
   };
 
+  const updateImages = (images: any[]) => {
+    onUpdate({ images });
+  };
+
+  const updateOrgChart = (orgData: any[]) => {
+    onUpdate({ 
+      orgChart: orgData.length > 0 ? orgData : undefined 
+    });
+  };
+
   return (
     <div className="border rounded-lg p-4 space-y-3 bg-card">
       <div className="flex items-start gap-3">
@@ -292,58 +305,116 @@ function ChecklistItemEditor({ item, index, onUpdate, onRemove }: ChecklistItemE
             rows={2}
           />
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Button
+              type="button"
               variant="outline"
               size="sm"
               onClick={() => setShowAdvanced(!showAdvanced)}
             >
-              Erweitert
+              {showAdvanced ? 'Weniger' : 'Erweitert'}
             </Button>
-            <Button variant="outline" size="sm" onClick={addLink}>
+            <Button type="button" variant="outline" size="sm" onClick={addLink}>
               <Link className="h-4 w-4 mr-1" />
               Link
-            </Button>
-            <Button variant="outline" size="sm">
-              <Image className="h-4 w-4 mr-1" />
-              Bild
             </Button>
           </div>
 
           {showAdvanced && (
-            <div className="space-y-3 p-3 bg-muted/50 rounded">
-              {item.links && item.links.length > 0 && (
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Links</Label>
-                  {item.links.map((link) => (
-                    <div key={link.id} className="flex gap-2">
-                      <Input
-                        value={link.title}
-                        onChange={(e) => updateLink(link.id, { title: e.target.value })}
-                        placeholder="Link-Titel"
-                        className="flex-1"
-                      />
-                      <Input
-                        value={link.url}
-                        onChange={(e) => updateLink(link.id, { url: e.target.value })}
-                        placeholder="URL"
-                        className="flex-2"
-                      />
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => removeLink(link.id)}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+            <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
+              <Tabs defaultValue="links" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="links">Links</TabsTrigger>
+                  <TabsTrigger value="images">Bilder</TabsTrigger>
+                  <TabsTrigger value="orgchart">Organigramm</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="links" className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm font-medium">Links verwalten</Label>
+                    <Button type="button" size="sm" onClick={addLink}>
+                      <Plus className="h-4 w-4 mr-1" />
+                      Link hinzufügen
+                    </Button>
+                  </div>
+                  
+                  {item.links && item.links.length > 0 ? (
+                    <div className="space-y-2">
+                      {item.links.map((link) => (
+                        <div key={link.id} className="flex gap-2 items-end">
+                          <div className="flex-1">
+                            <Label className="text-xs">Titel</Label>
+                            <Input
+                              value={link.title}
+                              onChange={(e) => updateLink(link.id, { title: e.target.value })}
+                              placeholder="Link-Titel"
+                              className="mt-1"
+                            />
+                          </div>
+                          <div className="flex-2">
+                            <Label className="text-xs">URL</Label>
+                            <Input
+                              value={link.url}
+                              onChange={(e) => updateLink(link.id, { url: e.target.value })}
+                              placeholder="https://... oder /lokaler-pfad"
+                              className="mt-1"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Typ</Label>
+                            <Select
+                              value={link.type}
+                              onValueChange={(value) => updateLink(link.id, { type: value })}
+                            >
+                              <SelectTrigger className="w-24 mt-1">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="external">Web</SelectItem>
+                                <SelectItem value="internal">Lokal</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => removeLink(link.id)}
+                            className="text-destructive"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
+                  ) : (
+                    <div className="text-center py-4 text-muted-foreground text-sm">
+                      Noch keine Links hinzugefügt.
+                    </div>
+                  )}
+                </TabsContent>
+                
+                <TabsContent value="images">
+                  <ImageUpload
+                    images={item.images || []}
+                    onUpdate={updateImages}
+                    maxImages={3}
+                  />
+                </TabsContent>
+                
+                <TabsContent value="orgchart">
+                  <OrgChart
+                    data={(item as any).orgChart || []}
+                    onUpdate={updateOrgChart}
+                    editable={true}
+                  />
+                </TabsContent>
+              </Tabs>
             </div>
           )}
         </div>
         <Button
+          type="button"
           variant="ghost"
           size="sm"
           onClick={onRemove}
