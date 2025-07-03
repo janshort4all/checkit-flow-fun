@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Check, ExternalLink, Image, MessageCircle, Users, ChevronDown, ChevronRight, GripVertical } from 'lucide-react';
+import { Check, ExternalLink, Users, ChevronDown, ChevronRight, GripVertical, Workflow } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
@@ -42,13 +42,13 @@ export function ChecklistItem({
   return (
     <>
       <div className={cn(
-        'checklist-item border rounded-lg transition-all duration-200',
-        item.completed ? 'completed border-success-200 bg-success-50/50' : 'border-border bg-background',
-        isDragging && 'opacity-50 transform rotate-2'
+        'checklist-item border rounded-xl transition-all duration-200 shadow-sm hover:shadow-md',
+        item.completed ? 'completed border-success-200 bg-success-50/30' : 'border-border bg-background hover:bg-muted/20',
+        isDragging && 'opacity-50 transform rotate-1 shadow-lg'
       )}>
-        <div className="flex items-start gap-3 p-4">
+        <div className="flex items-start gap-4 p-5">
           {showDetails && (
-            <div {...dragHandleProps} className="cursor-grab active:cursor-grabbing mt-1">
+            <div {...dragHandleProps} className="cursor-grab active:cursor-grabbing mt-1.5 opacity-40 hover:opacity-70 transition-opacity">
               <GripVertical className="h-4 w-4 text-muted-foreground" />
             </div>
           )}
@@ -56,41 +56,25 @@ export function ChecklistItem({
           <Checkbox
             checked={item.completed}
             onCheckedChange={handleToggle}
-            className="mt-1 data-[state=checked]:bg-success-600 data-[state=checked]:border-success-600"
+            className="mt-1.5 data-[state=checked]:bg-success-600 data-[state=checked]:border-success-600"
           />
           
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2">
+          <div className="flex-1 min-w-0 space-y-4">
+            <div className="flex items-start justify-between gap-3">
               <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <h3 className={cn(
-                    'font-medium text-sm transition-all duration-200',
-                    item.completed 
-                      ? 'line-through text-muted-foreground' 
-                      : 'text-foreground hover:text-primary'
-                  )}>
-                    {item.title}
-                  </h3>
-                  {hasExtendedContent && showDetails && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setIsExpanded(!isExpanded)}
-                      className="h-6 w-6 p-0"
-                    >
-                      {isExpanded ? (
-                        <ChevronDown className="h-4 w-4" />
-                      ) : (
-                        <ChevronRight className="h-4 w-4" />
-                      )}
-                    </Button>
-                  )}
-                </div>
+                <h3 className={cn(
+                  'font-semibold text-base leading-relaxed transition-all duration-200',
+                  item.completed 
+                    ? 'line-through text-muted-foreground/70' 
+                    : 'text-foreground'
+                )}>
+                  {item.title}
+                </h3>
                 
                 {item.description && showDetails && (
                   <p className={cn(
-                    'text-sm mt-1 transition-opacity duration-200',
-                    item.completed ? 'text-muted-foreground/70' : 'text-muted-foreground'
+                    'text-sm mt-2 leading-relaxed transition-opacity duration-200',
+                    item.completed ? 'text-muted-foreground/60' : 'text-muted-foreground'
                   )}>
                     {item.description}
                   </p>
@@ -98,116 +82,104 @@ export function ChecklistItem({
               </div>
               
               {item.completed && item.completedBy && (
-                <Badge variant="outline" className="text-xs bg-success-50 text-success-700 border-success-200">
-                  <Check className="h-3 w-3 mr-1" />
+                <Badge variant="outline" className="bg-success-50 text-success-700 border-success-200 font-medium">
+                  <Check className="h-3 w-3 mr-1.5" />
                   {item.completedBy}
                 </Badge>
               )}
             </div>
 
-            {/* Bilder Vorschau */}
+            {/* Images Gallery */}
             {showDetails && item.images && item.images.length > 0 && (
-              <div className="mt-3">
-                <div className="flex items-center gap-2 mb-2">
-                  <Image className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground">
-                    {item.images.length} Bild{item.images.length > 1 ? 'er' : ''}
-                  </span>
-                </div>
-                <div className="flex gap-2 overflow-x-auto pb-2">
-                  {item.images.map((image, index) => (
-                    <div 
-                      key={image.id} 
-                      className="relative group cursor-pointer flex-shrink-0"
-                      onClick={() => openImageViewer(index)}
-                    >
-                      <img
-                        src={image.url}
-                        alt={image.alt}
-                        className="w-16 h-16 object-cover rounded border hover:shadow-md transition-shadow"
-                      />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded flex items-center justify-center">
-                        <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                          <div className="w-6 h-6 bg-white/90 rounded-full flex items-center justify-center">
-                            <Image className="h-3 w-3" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Links */}
-            {showDetails && item.links && item.links.length > 0 && (
-              <div className="mt-3">
-                <div className="flex flex-wrap gap-2">
-                  {item.links.map((link) => (
-                    <Button
-                      key={link.id}
-                      variant="outline"
-                      size="sm"
-                      className="h-8 text-xs"
-                      onClick={() => {
-                        if (link.type === 'external') {
-                          window.open(link.url, '_blank');
-                        } else {
-                          window.open(link.url, '_blank');
-                        }
-                      }}
-                    >
-                      <ExternalLink className="h-3 w-3 mr-1" />
-                      {link.title}
-                      {link.type === 'internal' && (
-                        <span className="ml-1 text-xs opacity-60">(lokal)</span>
-                      )}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Organigramm Button */}
-            {showDetails && (item as any).orgChart && (item as any).orgChart.length > 0 && (
-              <div className="mt-3">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className="h-8 text-xs"
-                >
-                  <Users className="h-3 w-3 mr-1" />
-                  Organigramm anzeigen
-                  {isExpanded ? (
-                    <ChevronDown className="h-3 w-3 ml-1" />
-                  ) : (
-                    <ChevronRight className="h-3 w-3 ml-1" />
-                  )}
-                </Button>
-              </div>
-            )}
-
-            {isExpanded && showDetails && hasExtendedContent && (
-              <div className="mt-4 space-y-4 p-3 bg-muted/30 rounded-lg">
-                {(item as any).orgChart && (item as any).orgChart.length > 0 && (
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <Users className="h-4 w-4" />
-                      <span className="text-sm font-medium">Organigramm</span>
-                    </div>
-                    <OrgChart
-                      data={(item as any).orgChart}
-                      onUpdate={() => {}}
-                      editable={false}
+              <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+                {item.images.map((image, index) => (
+                  <div 
+                    key={image.id} 
+                    className="relative group cursor-pointer aspect-square overflow-hidden rounded-lg border-2 border-border/50 hover:border-primary/50 transition-all duration-200 hover:shadow-lg hover:scale-105"
+                    onClick={() => openImageViewer(index)}
+                  >
+                    <img
+                      src={image.url}
+                      alt={image.alt}
+                      className="w-full h-full object-cover"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
                   </div>
+                ))}
+              </div>
+            )}
+
+            {/* Interactive Elements Row */}
+            {showDetails && ((item.links && item.links.length > 0) || hasExtendedContent) && (
+              <div className="flex flex-wrap gap-3">
+                {/* Links */}
+                {item.links && item.links.map((link) => (
+                  <Button
+                    key={link.id}
+                    variant="outline"
+                    size="sm"
+                    className="h-9 px-4 rounded-lg border-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 hover:shadow-sm"
+                    onClick={() => {
+                      if (link.type === 'external') {
+                        window.open(link.url, '_blank');
+                      } else {
+                        window.open(link.url, '_blank');
+                      }
+                    }}
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    <span className="font-medium">{link.title}</span>
+                    {link.type === 'internal' && (
+                      <span className="ml-2 text-xs opacity-60 bg-muted px-1.5 py-0.5 rounded">lokal</span>
+                    )}
+                  </Button>
+                ))}
+
+                {/* Process Flow Chart Button */}
+                {hasExtendedContent && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="h-9 px-4 rounded-lg border-2 hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 hover:shadow-sm"
+                  >
+                    <Workflow className="h-4 w-4 mr-2" />
+                    <span className="font-medium">Prozessablauf</span>
+                    {isExpanded ? (
+                      <ChevronDown className="h-4 w-4 ml-2" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4 ml-2" />
+                    )}
+                  </Button>
                 )}
               </div>
             )}
 
+            {/* Expanded Process Flow Content */}
+            {isExpanded && showDetails && hasExtendedContent && (
+              <div className="mt-4 p-5 bg-gradient-to-br from-muted/20 to-muted/10 rounded-xl border border-border/50">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Workflow className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-lg">Prozessablauf</h4>
+                    <p className="text-sm text-muted-foreground">Interaktives Flussdiagramm</p>
+                  </div>
+                </div>
+                <div className="bg-background/50 rounded-lg p-4 border border-border/30">
+                  <OrgChart
+                    data={(item as any).orgChart}
+                    onUpdate={() => {}}
+                    editable={false}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Completion Timestamp */}
             {item.completedAt && (
-              <div className="text-xs text-muted-foreground mt-2">
+              <div className="text-xs text-muted-foreground/70 mt-3 font-medium">
                 Abgeschlossen: {new Date(item.completedAt).toLocaleDateString('de-DE', {
                   day: '2-digit',
                   month: '2-digit',
