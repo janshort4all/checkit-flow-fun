@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Checklist, ChecklistItem } from '../types/checklist';
 
@@ -25,6 +26,22 @@ const mockChecklists: Checklist[] = [
         completedAt: new Date('2024-01-16'),
         completedBy: 'Max Mustermann',
         order: 1,
+        images: [
+          {
+            id: 'img-1',
+            url: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop',
+            alt: 'GitHub Repository Screenshot',
+            name: 'github-repo.png'
+          }
+        ],
+        links: [
+          {
+            id: 'link-1',
+            title: 'GitHub Repository',
+            url: 'https://github.com/company/project',
+            type: 'external'
+          }
+        ]
       },
       {
         id: '1-2',
@@ -35,6 +52,34 @@ const mockChecklists: Checklist[] = [
         completedAt: new Date('2024-01-17'),
         completedBy: 'Max Mustermann',
         order: 2,
+        images: [
+          {
+            id: 'img-2',
+            url: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&h=600&fit=crop',
+            alt: 'Laptop mit Code',
+            name: 'laptop-code.jpg'
+          },
+          {
+            id: 'img-3',
+            url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=600&fit=crop',
+            alt: 'Circuit Board',
+            name: 'circuit-board.jpg'
+          }
+        ],
+        links: [
+          {
+            id: 'link-2',
+            title: 'VS Code Settings',
+            url: '/docs/vscode-setup.md',
+            type: 'internal'
+          },
+          {
+            id: 'link-3',
+            title: 'ESLint Config',
+            url: 'https://eslint.org/docs/user-guide/configuring',
+            type: 'external'
+          }
+        ]
       },
       {
         id: '1-3',
@@ -43,6 +88,27 @@ const mockChecklists: Checklist[] = [
         completed: false,
         createdAt: new Date('2024-01-15'),
         order: 3,
+        orgChart: [
+          {
+            id: 'org-1',
+            name: 'DevOps Team',
+            role: 'Team Lead',
+            children: [
+              {
+                id: 'org-2',
+                name: 'CI/CD Engineer',
+                role: 'Pipeline Setup',
+                children: []
+              },
+              {
+                id: 'org-3',
+                name: 'Security Engineer',
+                role: 'Security Review',
+                children: []
+              }
+            ]
+          }
+        ]
       },
       {
         id: '1-4',
@@ -51,6 +117,22 @@ const mockChecklists: Checklist[] = [
         completed: false,
         createdAt: new Date('2024-01-15'),
         order: 4,
+        images: [
+          {
+            id: 'img-4',
+            url: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=800&h=600&fit=crop',
+            alt: 'Frau arbeitet am Laptop',
+            name: 'woman-laptop.jpg'
+          }
+        ],
+        links: [
+          {
+            id: 'link-4',
+            title: 'Dokumentation Template',
+            url: '/templates/documentation.md',
+            type: 'internal'
+          }
+        ]
       }
     ]
   },
@@ -78,6 +160,43 @@ const mockChecklists: Checklist[] = [
         completed: false,
         createdAt: new Date('2024-01-22'),
         order: 1,
+        images: [
+          {
+            id: 'img-5',
+            url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&h=600&fit=crop',
+            alt: 'Code Review am Computer',
+            name: 'code-review.jpg'
+          }
+        ],
+        links: [
+          {
+            id: 'link-5',
+            title: 'PR Review Checklist',
+            url: '/docs/pr-review-checklist.md',
+            type: 'internal'
+          }
+        ],
+        orgChart: [
+          {
+            id: 'org-4',
+            name: 'Review Team',
+            role: 'Code Review',
+            children: [
+              {
+                id: 'org-5',
+                name: 'Senior Developer',
+                role: 'Technical Review',
+                children: []
+              },
+              {
+                id: 'org-6',
+                name: 'Junior Developer',
+                role: 'Learning Review',
+                children: []
+              }
+            ]
+          }
+        ]
       },
       {
         id: '2-2',
@@ -121,6 +240,28 @@ const mockChecklists: Checklist[] = [
         completedAt: new Date('2024-01-15'),
         completedBy: 'Tom Weber',
         order: 1,
+        images: [
+          {
+            id: 'img-6',
+            url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=600&fit=crop',
+            alt: 'Test Results Dashboard',
+            name: 'test-results.jpg'
+          }
+        ],
+        links: [
+          {
+            id: 'link-6',
+            title: 'Test Report',
+            url: '/reports/test-results.html',
+            type: 'internal'
+          },
+          {
+            id: 'link-7',
+            title: 'CI Dashboard',
+            url: 'https://ci.company.com/dashboard',
+            type: 'external'
+          }
+        ]
       },
       {
         id: '3-2',
@@ -131,6 +272,27 @@ const mockChecklists: Checklist[] = [
         completedAt: new Date('2024-01-16'),
         completedBy: 'Tom Weber',
         order: 2,
+        orgChart: [
+          {
+            id: 'org-7',
+            name: 'QA Team',
+            role: 'Quality Assurance',
+            children: [
+              {
+                id: 'org-8',
+                name: 'QA Engineer',
+                role: 'Manual Testing',
+                children: []
+              },
+              {
+                id: 'org-9',
+                name: 'Automation Engineer',
+                role: 'Automated Testing',
+                children: []
+              }
+            ]
+          }
+        ]
       },
       {
         id: '3-3',
@@ -151,6 +313,61 @@ const mockChecklists: Checklist[] = [
         completedAt: new Date('2024-01-18'),
         completedBy: 'Tom Weber',
         order: 4,
+        images: [
+          {
+            id: 'img-7',
+            url: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop',
+            alt: 'Deployment Dashboard',
+            name: 'deployment.jpg'
+          },
+          {
+            id: 'img-8',
+            url: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&h=600&fit=crop',
+            alt: 'Server Monitoring',
+            name: 'monitoring.jpg'
+          },
+          {
+            id: 'img-9',
+            url: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=800&h=600&fit=crop',
+            alt: 'Production Environment',
+            name: 'production.jpg'
+          }
+        ],
+        links: [
+          {
+            id: 'link-8',
+            title: 'Production Dashboard',
+            url: 'https://prod.company.com/dashboard',
+            type: 'external'
+          },
+          {
+            id: 'link-9',
+            title: 'Deployment Guide',
+            url: '/docs/deployment-guide.md',
+            type: 'internal'
+          }
+        ],
+        orgChart: [
+          {
+            id: 'org-10',
+            name: 'Deployment Team',
+            role: 'Operations',
+            children: [
+              {
+                id: 'org-11',
+                name: 'DevOps Engineer',
+                role: 'Infrastructure',
+                children: []
+              },
+              {
+                id: 'org-12',
+                name: 'SRE Engineer',
+                role: 'Site Reliability',
+                children: []
+              }
+            ]
+          }
+        ]
       }
     ]
   }

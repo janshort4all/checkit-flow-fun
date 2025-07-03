@@ -168,6 +168,26 @@ export function ChecklistItem({
               </div>
             )}
 
+            {/* Organigramm Button */}
+            {showDetails && (item as any).orgChart && (item as any).orgChart.length > 0 && (
+              <div className="mt-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="h-8 text-xs"
+                >
+                  <Users className="h-3 w-3 mr-1" />
+                  Organigramm anzeigen
+                  {isExpanded ? (
+                    <ChevronDown className="h-3 w-3 ml-1" />
+                  ) : (
+                    <ChevronRight className="h-3 w-3 ml-1" />
+                  )}
+                </Button>
+              </div>
+            )}
+
             {isExpanded && showDetails && hasExtendedContent && (
               <div className="mt-4 space-y-4 p-3 bg-muted/30 rounded-lg">
                 {(item as any).orgChart && (item as any).orgChart.length > 0 && (
