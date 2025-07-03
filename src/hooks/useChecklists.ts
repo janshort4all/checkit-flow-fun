@@ -410,6 +410,8 @@ export const useChecklists = () => {
       responsible: checklistData.responsible,
       deputy: checklistData.deputy,
       tags: checklistData.tags || [],
+      category: checklistData.category || 'Allgemein',
+      subcategory: checklistData.subcategory,
       isTemplate: checklistData.isTemplate || false,
       recurringPattern: checklistData.recurringPattern,
       version: 1,
