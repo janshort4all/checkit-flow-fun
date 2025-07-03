@@ -8,6 +8,52 @@ import { ChecklistItem } from '../components/ChecklistItem';
 import { ChecklistEditor } from '../components/ChecklistEditor';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Checklist } from '../types/checklist';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+function SortableChecklistItem({ item, onToggle }: { item: any; onToggle: (id: string) => void }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <ChecklistItem
+        item={item}
+        onToggle={onToggle}
+        isDragging={isDragging}
+        dragHandleProps={{ ...attributes, ...listeners }}
+      />
+    </div>
+  );
+}
 
 export default function ChecklistDetail() {
   const { id } = useParams<{ id: string }>();
@@ -16,6 +62,13 @@ export default function ChecklistDetail() {
   const [isEditing, setIsEditing] = useState(false);
   
   const checklist = checklists.find(c => c.id === id);
+  
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   if (!checklist) {
     return (
@@ -35,6 +88,22 @@ export default function ChecklistDetail() {
   const handleSave = (updates: Partial<Checklist>) => {
     updateChecklist(checklist.id, updates);
     setIsEditing(false);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = checklist.items.findIndex(item => item.id === active.id);
+      const newIndex = checklist.items.findIndex(item => item.id === over.id);
+      
+      const newItems = arrayMove(checklist.items, oldIndex, newIndex).map((item, index) => ({
+        ...item,
+        order: index + 1
+      }));
+      
+      updateChecklist(checklist.id, { items: newItems });
+    }
   };
 
   if (isEditing) {
@@ -80,6 +149,8 @@ export default function ChecklistDetail() {
         return 'Offen';
     }
   };
+
+  const sortedItems = [...checklist.items].sort((a, b) => a.order - b.order);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -189,20 +260,30 @@ export default function ChecklistDetail() {
       </div>
 
       <div className="bg-card rounded-lg border p-6">
-        <h2 className="text-xl font-semibold mb-4">Checklisten-Punkte</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          Checklisten-Punkte
+          <span className="text-sm font-normal text-muted-foreground ml-2">
+            (Drag & Drop zum Sortieren)
+          </span>
+        </h2>
         {checklist.items.length > 0 ? (
-          <div className="space-y-3">
-            {checklist.items
-              .sort((a, b) => a.order - b.order)
-              .map((item) => (
-                <ChecklistItem
-                  key={item.id}
-                  item={item}
-                  onToggle={(itemId) => toggleItemComplete(checklist.id, itemId)}
-                />
-              ))
-            }
-          </div>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext items={sortedItems.map(item => item.id)} strategy={verticalListSortingStrategy}>
+              <div className="space-y-3">
+                {sortedItems.map((item) => (
+                  <SortableChecklistItem
+                    key={item.id}
+                    item={item}
+                    onToggle={(itemId) => toggleItemComplete(checklist.id, itemId)}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
         ) : (
           <div className="text-center py-8 text-muted-foreground">
             <p>Keine Punkte in dieser Checkliste.</p>
