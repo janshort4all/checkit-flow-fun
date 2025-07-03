@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Checklist, ChecklistItem } from '../types/checklist';
 
@@ -6,21 +5,23 @@ import { Checklist, ChecklistItem } from '../types/checklist';
 const mockChecklists: Checklist[] = [
   {
     id: '1',
-    title: 'Projekt Setup Checkliste',
-    description: 'Grundlegende Schritte für ein neues Projekt',
+    title: 'Thermografie Prüfung Schaltschrank',
+    description: 'Wärmebildaufnahmen und Analyse von Schaltschränken',
+    category: 'Messtechnik',
+    subcategory: 'Thermografie',
     status: 'in-progress',
     createdAt: new Date('2024-01-15'),
     updatedAt: new Date('2024-01-20'),
     responsible: 'Max Mustermann',
     deputy: 'Anna Schmidt',
-    tags: ['projekt', 'setup', 'entwicklung'],
+    tags: ['thermografie', 'schaltschrank', 'wärmebildkamera'],
     isTemplate: false,
     version: 1,
     items: [
       {
         id: '1-1',
-        title: 'Repository erstellen',
-        description: 'Neues Git-Repository auf GitHub anlegen und grundlegende Struktur einrichten',
+        title: 'Wärmebildkamera kalibrieren',
+        description: 'Kamera auf Umgebungstemperatur einstellen und Referenzmessung durchführen',
         completed: true,
         createdAt: new Date('2024-01-15'),
         completedAt: new Date('2024-01-16'),
@@ -29,108 +30,54 @@ const mockChecklists: Checklist[] = [
         images: [
           {
             id: 'img-1',
-            url: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop',
-            alt: 'GitHub Repository Screenshot',
-            name: 'github-repo.png'
+            url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&h=600&fit=crop',
+            alt: 'Wärmebildkamera Setup',
+            name: 'thermal-camera.jpg'
           }
         ],
         links: [
           {
             id: 'link-1',
-            title: 'GitHub Repository',
-            url: 'https://github.com/company/project',
-            type: 'external'
+            title: 'Kalibrierungsprotokoll',
+            url: '/docs/calibration-protocol.pdf',
+            type: 'internal'
           }
         ]
       },
       {
         id: '1-2',
-        title: 'Entwicklungsumgebung konfigurieren',
-        description: 'IDE einrichten, Extensions installieren, Linter und Formatter konfigurieren',
-        completed: true,
+        title: 'Schaltschrank thermisch vermessen',
+        description: 'Systematische Aufnahme aller Komponenten und Verbindungen',
+        completed: false,
         createdAt: new Date('2024-01-15'),
-        completedAt: new Date('2024-01-17'),
-        completedBy: 'Max Mustermann',
         order: 2,
         images: [
           {
             id: 'img-2',
-            url: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&h=600&fit=crop',
-            alt: 'Laptop mit Code',
-            name: 'laptop-code.jpg'
-          },
-          {
-            id: 'img-3',
             url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=600&fit=crop',
-            alt: 'Circuit Board',
-            name: 'circuit-board.jpg'
+            alt: 'Schaltschrank Thermografie',
+            name: 'switchgear-thermal.jpg'
           }
         ],
-        links: [
-          {
-            id: 'link-2',
-            title: 'VS Code Settings',
-            url: '/docs/vscode-setup.md',
-            type: 'internal'
-          },
-          {
-            id: 'link-3',
-            title: 'ESLint Config',
-            url: 'https://eslint.org/docs/user-guide/configuring',
-            type: 'external'
-          }
-        ]
-      },
-      {
-        id: '1-3',
-        title: 'CI/CD Pipeline einrichten',
-        description: 'GitHub Actions für automatisierte Tests und Deployment konfigurieren',
-        completed: false,
-        createdAt: new Date('2024-01-15'),
-        order: 3,
         orgChart: [
           {
             id: 'org-1',
-            name: 'DevOps Team',
-            role: 'Team Lead',
+            name: 'Messtechnik Team',
+            role: 'Durchführung',
             children: [
               {
                 id: 'org-2',
-                name: 'CI/CD Engineer',
-                role: 'Pipeline Setup',
+                name: 'Thermografie Spezialist',
+                role: 'Messung',
                 children: []
               },
               {
                 id: 'org-3',
-                name: 'Security Engineer',
-                role: 'Security Review',
+                name: 'Elektrotechniker',
+                role: 'Sicherheit',
                 children: []
               }
             ]
-          }
-        ]
-      },
-      {
-        id: '1-4',
-        title: 'Dokumentation erstellen',
-        description: 'README, API-Dokumentation und Entwicklerhandbuch schreiben',
-        completed: false,
-        createdAt: new Date('2024-01-15'),
-        order: 4,
-        images: [
-          {
-            id: 'img-4',
-            url: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=800&h=600&fit=crop',
-            alt: 'Frau arbeitet am Laptop',
-            name: 'woman-laptop.jpg'
-          }
-        ],
-        links: [
-          {
-            id: 'link-4',
-            title: 'Dokumentation Template',
-            url: '/templates/documentation.md',
-            type: 'internal'
           }
         ]
       }
@@ -138,88 +85,51 @@ const mockChecklists: Checklist[] = [
   },
   {
     id: '2',
-    title: 'Wöchentliche Code Review',
-    description: 'Standardprozess für wöchentliche Code-Reviews',
+    title: 'Staubmessung Arbeitsplatz',
+    description: 'Messung der Staubkonzentration am Arbeitsplatz',
+    category: 'Messtechnik',
+    subcategory: 'Staubmessung',
     status: 'open',
     createdAt: new Date('2024-01-22'),
     updatedAt: new Date('2024-01-22'),
     responsible: 'Anna Schmidt',
     deputy: 'Tom Weber',
-    tags: ['review', 'qualität', 'wöchentlich'],
+    tags: ['staub', 'arbeitsplatz', 'messung'],
     isTemplate: true,
-    recurringPattern: {
-      type: 'weekly',
-      interval: 1
-    },
     version: 1,
     items: [
       {
         id: '2-1',
-        title: 'Pull Requests überprüfen',
-        description: 'Alle offenen Pull Requests der Woche durchgehen',
+        title: 'Messgeräte vorbereiten',
+        description: 'Staubmessgerät kalibrieren und Probenahme vorbereiten',
         completed: false,
         createdAt: new Date('2024-01-22'),
         order: 1,
         images: [
           {
-            id: 'img-5',
-            url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&h=600&fit=crop',
-            alt: 'Code Review am Computer',
-            name: 'code-review.jpg'
+            id: 'img-4',
+            url: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=600&fit=crop',
+            alt: 'Staubmessgerät',
+            name: 'dust-meter.jpg'
           }
         ],
         links: [
           {
-            id: 'link-5',
-            title: 'PR Review Checklist',
-            url: '/docs/pr-review-checklist.md',
+            id: 'link-4',
+            title: 'Messprotokoll Vorlage',
+            url: '/templates/dust-measurement.xlsx',
             type: 'internal'
           }
-        ],
-        orgChart: [
-          {
-            id: 'org-4',
-            name: 'Review Team',
-            role: 'Code Review',
-            children: [
-              {
-                id: 'org-5',
-                name: 'Senior Developer',
-                role: 'Technical Review',
-                children: []
-              },
-              {
-                id: 'org-6',
-                name: 'Junior Developer',
-                role: 'Learning Review',
-                children: []
-              }
-            ]
-          }
         ]
-      },
-      {
-        id: '2-2',
-        title: 'Code-Qualität bewerten',
-        description: 'Metriken überprüfen und Verbesserungsvorschläge dokumentieren',
-        completed: false,
-        createdAt: new Date('2024-01-22'),
-        order: 2,
-      },
-      {
-        id: '2-3',
-        title: 'Team-Feedback sammeln',
-        description: 'Feedback der Entwickler zu Code-Standards einholen',
-        completed: false,
-        createdAt: new Date('2024-01-22'),
-        order: 3,
       }
     ]
   },
   {
     id: '3',
-    title: 'Deployment Prozess',
-    description: 'Schritte für sichere Produktions-Deployments',
+    title: 'Erdgas Abrechnung Q1',
+    description: 'Quartalsabrechnung für Erdgasverbrauch',
+    category: 'Energieabrechnung',
+    subcategory: 'Erdgas',
     status: 'completed',
     createdAt: new Date('2024-01-10'),
     updatedAt: new Date('2024-01-18'),
@@ -227,14 +137,14 @@ const mockChecklists: Checklist[] = [
     completedBy: 'Tom Weber',
     responsible: 'Tom Weber',
     deputy: 'Max Mustermann',
-    tags: ['deployment', 'produktion', 'sicherheit'],
+    tags: ['erdgas', 'abrechnung', 'quartalsabschluss'],
     isTemplate: false,
     version: 1,
     items: [
       {
         id: '3-1',
-        title: 'Tests ausführen',
-        description: 'Vollständige Testsuite durchlaufen lassen',
+        title: 'Zählerstände erfassen',
+        description: 'Alle Gaszähler ablesen und dokumentieren',
         completed: true,
         createdAt: new Date('2024-01-10'),
         completedAt: new Date('2024-01-15'),
@@ -242,31 +152,25 @@ const mockChecklists: Checklist[] = [
         order: 1,
         images: [
           {
-            id: 'img-6',
-            url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=600&fit=crop',
-            alt: 'Test Results Dashboard',
-            name: 'test-results.jpg'
+            id: 'img-5',
+            url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop',
+            alt: 'Gaszähler Ablesung',
+            name: 'gas-meter.jpg'
           }
         ],
         links: [
           {
-            id: 'link-6',
-            title: 'Test Report',
-            url: '/reports/test-results.html',
+            id: 'link-5',
+            title: 'Zählerstand Formular',
+            url: '/forms/gas-meter-reading.pdf',
             type: 'internal'
-          },
-          {
-            id: 'link-7',
-            title: 'CI Dashboard',
-            url: 'https://ci.company.com/dashboard',
-            type: 'external'
           }
         ]
       },
       {
         id: '3-2',
-        title: 'Staging-Umgebung testen',
-        description: 'Funktionalität in Staging-Umgebung validieren',
+        title: 'Verbrauch berechnen',
+        description: 'Differenz zum Vormonat berechnen und Kosten ermitteln',
         completed: true,
         createdAt: new Date('2024-01-10'),
         completedAt: new Date('2024-01-16'),
@@ -274,98 +178,150 @@ const mockChecklists: Checklist[] = [
         order: 2,
         orgChart: [
           {
-            id: 'org-7',
-            name: 'QA Team',
-            role: 'Quality Assurance',
+            id: 'org-4',
+            name: 'Abrechnungsteam',
+            role: 'Berechnung',
             children: [
               {
-                id: 'org-8',
-                name: 'QA Engineer',
-                role: 'Manual Testing',
-                children: []
-              },
-              {
-                id: 'org-9',
-                name: 'Automation Engineer',
-                role: 'Automated Testing',
+                id: 'org-5',
+                name: 'Energiecontroller',
+                role: 'Analyse',
                 children: []
               }
             ]
           }
         ]
-      },
+      }
+    ]
+  },
+  {
+    id: '4',
+    title: 'Stromabrechnung Hauptgebäude',
+    description: 'Monatliche Stromkostenabrechnung',
+    category: 'Energieabrechnung',
+    subcategory: 'Strom',
+    status: 'in-progress',
+    createdAt: new Date('2024-01-25'),
+    updatedAt: new Date('2024-01-26'),
+    responsible: 'Anna Schmidt',
+    deputy: 'Tom Weber',
+    tags: ['strom', 'abrechnung', 'hauptgebäude'],
+    isTemplate: true,
+    recurringPattern: {
+      type: 'monthly',
+      interval: 1
+    },
+    version: 1,
+    items: [
       {
-        id: '3-3',
-        title: 'Backup erstellen',
-        description: 'Vollständiges Backup der Produktionsdatenbank',
+        id: '4-1',
+        title: 'Stromzähler ablesen',
+        description: 'Hauptzähler und Unterzähler dokumentieren',
         completed: true,
-        createdAt: new Date('2024-01-10'),
-        completedAt: new Date('2024-01-17'),
-        completedBy: 'Tom Weber',
-        order: 3,
-      },
-      {
-        id: '3-4',
-        title: 'Deployment durchführen',
-        description: 'Code in Produktionsumgebung deployen',
-        completed: true,
-        createdAt: new Date('2024-01-10'),
-        completedAt: new Date('2024-01-18'),
-        completedBy: 'Tom Weber',
-        order: 4,
+        createdAt: new Date('2024-01-25'),
+        completedAt: new Date('2024-01-26'),
+        completedBy: 'Anna Schmidt',
+        order: 1,
         images: [
           {
-            id: 'img-7',
-            url: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=600&fit=crop',
-            alt: 'Deployment Dashboard',
-            name: 'deployment.jpg'
+            id: 'img-6',
+            url: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&h=600&fit=crop',
+            alt: 'Stromzähler',
+            name: 'electricity-meter.jpg'
           },
+          {
+            id: 'img-7',
+            url: 'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=800&h=600&fit=crop',
+            alt: 'Zählerstand Dokumentation',
+            name: 'meter-documentation.jpg'
+          }
+        ],
+        links: [
+          {
+            id: 'link-6',
+            title: 'Stromzähler Übersicht',
+            url: '/docs/electricity-meters.pdf',
+            type: 'internal'
+          },
+          {
+            id: 'link-7',
+            title: 'Online Verbrauchsdaten',
+            url: 'https://portal.energieversorger.de',
+            type: 'external'
+          }
+        ]
+      },
+      {
+        id: '4-2',
+        title: 'Kostenverteilung berechnen',
+        description: 'Verbrauch auf Kostenstellen aufteilen',
+        completed: false,
+        createdAt: new Date('2024-01-25'),
+        order: 2,
+        orgChart: [
+          {
+            id: 'org-6',
+            name: 'Controlling',
+            role: 'Kostenaufteilung',
+            children: [
+              {
+                id: 'org-7',
+                name: 'Buchhalter',
+                role: 'Kostenstellen',
+                children: []
+              },
+              {
+                id: 'org-8',
+                name: 'Controller',
+                role: 'Analyse',
+                children: []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: '5',
+    title: 'Wartung Klimaanlage Block A',
+    description: 'Regelmäßige Wartung der Klimaanlage',
+    category: 'Wartung',
+    subcategory: 'Klimatechnik',
+    status: 'open',
+    createdAt: new Date('2024-01-28'),
+    updatedAt: new Date('2024-01-28'),
+    responsible: 'Max Mustermann',
+    deputy: 'Anna Schmidt',
+    tags: ['wartung', 'klimaanlage', 'block-a'],
+    isTemplate: true,
+    recurringPattern: {
+      type: 'monthly',
+      interval: 3
+    },
+    version: 1,
+    items: [
+      {
+        id: '5-1',
+        title: 'Filter prüfen und tauschen',
+        description: 'Luftfilter auf Verschmutzung prüfen und bei Bedarf erneuern',
+        completed: false,
+        createdAt: new Date('2024-01-28'),
+        order: 1,
+        images: [
           {
             id: 'img-8',
-            url: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=800&h=600&fit=crop',
-            alt: 'Server Monitoring',
-            name: 'monitoring.jpg'
-          },
-          {
-            id: 'img-9',
-            url: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=800&h=600&fit=crop',
-            alt: 'Production Environment',
-            name: 'production.jpg'
+            url: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=800&h=600&fit=crop',
+            alt: 'Klimaanlage Filter',
+            name: 'hvac-filter.jpg'
           }
         ],
         links: [
           {
             id: 'link-8',
-            title: 'Production Dashboard',
-            url: 'https://prod.company.com/dashboard',
-            type: 'external'
-          },
-          {
-            id: 'link-9',
-            title: 'Deployment Guide',
-            url: '/docs/deployment-guide.md',
+            title: 'Wartungsprotokoll',
+            url: '/docs/hvac-maintenance.pdf',
             type: 'internal'
-          }
-        ],
-        orgChart: [
-          {
-            id: 'org-10',
-            name: 'Deployment Team',
-            role: 'Operations',
-            children: [
-              {
-                id: 'org-11',
-                name: 'DevOps Engineer',
-                role: 'Infrastructure',
-                children: []
-              },
-              {
-                id: 'org-12',
-                name: 'SRE Engineer',
-                role: 'Site Reliability',
-                children: []
-              }
-            ]
           }
         ]
       }

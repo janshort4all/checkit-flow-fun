@@ -41,6 +41,8 @@ export interface Checklist {
   responsible?: string;
   deputy?: string;
   tags: string[];
+  category: string;
+  subcategory?: string;
   isTemplate: boolean;
   recurringPattern?: {
     type: 'daily' | 'weekly' | 'monthly';
